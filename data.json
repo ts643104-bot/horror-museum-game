@@ -1,0 +1,55 @@
+{
+  "museumName": "دهاليز الرعب والدم 🩸💀",
+  "password": "2010",
+  "characterModel": "/uploads/img_1794558443288_790835.glb",
+  "characterModelMale": "/uploads/img_1794558443288_790835.glb",
+  "characterModelFemale": "/models/Michelle.glb",
+  "characterAnimations": [],
+  "zombieModel": "/uploads/img_1794558443288_790835.glb",
+  "frames": [
+    {
+      "img": "/uploads/img_1794320708800_650051.jpg",
+      "title": "قصر  الظلام  "
+    },
+    {
+      "img": "/uploads/img_1794320709202_233417.jpg",
+      "title": "منوعفريتي "
+    },
+    {
+      "img": "/uploads/img_1794320709491_660228.jpg",
+      "title": "سما الصغيره "
+    },
+    {
+      "img": "/uploads/img_1794320709763_768048.jpg",
+      "title": "لوحت  مصاص  الدماء "
+    },
+    {
+      "img": "/uploads/img_1794320710014_629533.jpg",
+      "title": "طيب  و مسكين "
+    },
+    {
+      "img": "/uploads/img_1794320710178_453257.jpg",
+      "title": "الجوكر  الغلبان "
+    },
+    {
+      "img": "/uploads/img_1794320710372_312776.jpg",
+      "title": "تعب  من  العزاب "
+    },
+    {
+      "img": "/uploads/img_1794320710546_287505.jpg",
+      "title": "شجرت  اليليل "
+    },
+    {
+      "img": "/uploads/img_1794320710693_390004.jpg",
+      "title": "خايفه من  البشر "
+    },
+    {
+      "img": "/uploads/img_1794320710805_140086.jpg",
+      "title": "مرايتي "
+    },
+    {
+      "img": "/uploads/img_1794320710935_489854.jpg",
+      "title": "حابب  اخوفكم  "
+    }
+  ]
+}

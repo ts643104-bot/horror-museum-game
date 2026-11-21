@@ -1,0 +1,27 @@
+{
+  "name": "دهاليز الرعب والدم 🩸💀",
+  "short_name": "دهاليز الرعب",
+  "description": "متحف ودهاليز الرعب والدم الافتراضي ثلاثي الأبعاد متعدد اللاعبين",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#060204",
+  "theme_color": "#a80d1a",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

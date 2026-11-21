@@ -1,0 +1,16 @@
+{
+  "name": "الحب",
+  "engine": "generic",
+  "launch": {
+    "cmd": "node",
+    "args": ["server.js"]
+  },
+  "ready": "3000|3001",
+  "log": {
+    "stdout": true
+  },
+  "sourceRoots": [
+    "."
+  ],
+  "vars": {}
+}

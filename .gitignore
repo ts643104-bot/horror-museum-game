@@ -1,0 +1,5 @@
+node_modules/
+.env
+*.log
+temp_test.mjs
+temp_syntax_test.mjs

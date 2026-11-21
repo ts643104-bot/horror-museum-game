@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم المتحف</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #2b1220, #4a1f35);
+      color: #fff;
+      padding: 30px 16px;
+    }
+
+    .wrap {
+      max-width: 640px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffd9e6;
+      margin-bottom: 6px;
+      font-size: 24px;
+    }
+
+    .sub {
+      text-align: center;
+      color: rgba(255, 255, 255, .6);
+      font-size: 13px;
+      margin-bottom: 26px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .15);
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 12px 0 6px;
+      color: #ffd9e6;
+    }
+
+    input[type=text],
+    input[type=password] {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .25);
+      background: rgba(255, 255, 255, .08);
+      color: #fff;
+      font-family: 'Cairo';
+      outline: none;
+    }
+
+    input[type=file] {
+      color: #fff;
+    }
+
+    .btn {
+      padding: 11px 22px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Cairo';
+      background: linear-gradient(135deg, #f2a7c3, #e6c79a);
+      color: #3a1526;
+      font-weight: 800;
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
+    .btn.gray {
+      background: rgba(255, 255, 255, .2);
+      color: #fff;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .row>div {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .frame-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: rgba(0, 0, 0, .25);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .frame-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffd9e6;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 8px;
+      padding: 4px 8px;
+      min-width: 32px;
+      text-align: center;
+    }
+
+    #framesList {
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-top: 10px;
+    }
+
+    .frame-item img {
+      width: 74px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .frame-item input {
+      flex: 1;
+    }
+
+    .frame-item button {
+      background: #c0392b;
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+
+    #msg {
+      text-align: center;
+      margin-top: 14px;
+      color: #a8d8b9;
+      font-weight: 600;
+      min-height: 22px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .45);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>🎛️ لوحة تحكم المتحف</h1>
+    <div class="sub">ارفع الصور، اكتب العناوين، غيّر الاسم وكلمة السر</div>
+
+    <div class="card" id="loginCard">
+      <label>كلمة سر المتحف (لو موجودة، أو اتركها فارغة)</label>
+      <input type="password" id="loginPass">
+      <button class="btn" id="loginBtn">دخول اللوحة</button>
+      <div class="hint">هذه اللوحة مخصصة لصاحب المتحف فقط.</div>
+    </div>
+
+    <div id="panel" style="display:none">
+      <div class="card">
+        <label>اسم المتحف</label>
+        <input type="text" id="mName">
+        <label>كلمة سر الدخول (اتركها فارغة لإلغائها)</label>
+        <input type="text" id="mPass">
+      </div>
+
+      <div class="card">
+        <label>مجسم الشخصية ثلاثي الأبعاد (GLB)</label>
+        <div class="row">
+          <div><input type="file" id="modelFile" accept=".glb,.gltf,model/gltf-binary,model/gltf+json"></div>
+          <div>
+            <select id="modelGender" style="padding:10px; border-radius:10px; background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.2); font-family:'Cairo'; font-weight:700;">
+              <option value="male">👦 مجسم للرجل</option>
+              <option value="female">👩 مجسم للأنثى</option>
+              <option value="both">👥 للطرفين (الكل)</option>
+            </select>
+          </div>
+          <div style="flex:0"><button class="btn" id="modelBtn">رفع المجسم</button></div>
+        </div>
+        <div class="hint" id="modelStatus">المجسم الحالي: ستُستخدم الشخصية الافتراضية عند عدم تعيين مجسم.</div>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="delModelMaleBtn" style="background:transparent; border:1px solid rgba(255,100,100,.5); color:#ffb0b0; border-radius:8px; padding:6px 12px; font-size:12px; cursor:pointer;">🗑️ حذف مجسم الرجل</button>
+          <button id="delModelFemaleBtn" style="background:transparent; border:1px solid rgba(255,100,100,.5); color:#ffb0b0; border-radius:8px; padding:6px 12px; font-size:12px; cursor:pointer;">🗑️ حذف مجسم الأنثى</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <label>مجسم شخصية الزومبي (GLB/GLTF)</label>
+        <div class="row">
+          <div><input type="file" id="zombieModelFile" accept=".glb,.gltf,model/gltf-binary,model/gltf+json"></div>
+          <div style="flex:0"><button class="btn" id="zombieModelBtn">رفع مجسم الزومبي</button></div>
+        </div>
+        <div class="hint" id="zombieModelStatus">مجسم الزومبي الحالي: الافتراضي</div>
+        <div style="margin-top:12px;">
+          <button id="delZombieModelBtn" style="background:transparent; border:1px solid rgba(255,100,100,.5); color:#ffb0b0; border-radius:8px; padding:6px 12px; font-size:12px; cursor:pointer;">🗑️ حذف مجسم الزومبي المخصص</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <label>ملفات الحركات المنفصلة (GLB)</label>
+        <div class="row">
+          <div><input type="file" id="animationFiles" accept=".glb,.gltf,model/gltf-binary,model/gltf+json" multiple></div>
+          <div style="flex:0"><button class="btn" id="animationBtn">رفع الحركات</button></div>
+        </div>
+        <div class="hint" id="animationStatus">أسماء الملفات تساعد على التعرف على الحركة: Idle أو Walk أو Run أو Jump أو Dance أو Sit.</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <label style="margin:0;">رفع صور جديدة (حتى 100 صورة)</label>
+          <span id="framesCountBadge" style="font-size:12px; font-weight:700; color:#f2a7c3; background:rgba(255,255,255,.1); padding:4px 10px; border-radius:12px;">0 / 100</span>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <div><input type="file" id="file" accept="image/*" multiple></div>
+          <div><input type="text" id="newTitle" placeholder="العنوان (اختياري عند اختيار صور متعددة)"></div>
+          <div style="flex:0"><button class="btn" id="addBtn">➕ إضافة</button></div>
+        </div>
+        <div class="hint">يمكنك اختيار صورة واحدة أو مجموعة صور دفعة واحدة (تصل إلى 100 صورة).</div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px;">
+          <label style="margin:0;">البراويز المعلقة في القاعات</label>
+          <button id="clearAllBtn" style="background:transparent; border:1px solid rgba(255,100,100,.5); color:#ffb0b0; border-radius:8px; padding:4px 10px; font-size:12px; cursor:pointer;">🗑️ مسح الكل</button>
+        </div>
+        <div id="framesList"></div>
+        <button class="btn" id="saveBtn">💾 حفظ كل التغييرات</button>
+      </div>
+
+      <div class="card">
+        <button class="btn gray" onclick="location.href='/'">🏠 فتح المتحف</button>
+        <button class="btn gray" onclick="location.href='/museum.html'">🚪 دخول الصالة</button>
+      </div>
+      <div id="msg"></div>
+    </div>
+  </div>
+  <script>
+    let frames = [];
+    let modelPath = '';
+    let modelMalePath = '';
+    let modelFemalePath = '';
+    let zombieModelPath = '';
+    let animationPaths = [];
+    const $ = id => document.getElementById(id);
+    async function readApiJson(response) {
+      const contentType = response.headers.get('content-type') || '';
+      const body = await response.text();
+      if (!contentType.includes('application/json')) {
+        const preview = body.trim().slice(0, 100);
+        throw new Error(`مسار الخادم لم يُرجع JSON (HTTP ${response.status}). تأكد من تشغيل خادم المشروع. ${preview}`);
+      }
+      try { return JSON.parse(body); }
+      catch { throw new Error(`استجابة JSON غير صالحة من الخادم (HTTP ${response.status})`); }
+    }
+    async function apiFetch(url, options) {
+      let response;
+      try { response = await fetch(url, options); }
+      catch { throw new Error('تعذر الاتصال بالخادم. شغّل npm start وافتح لوحة الإدارة على عنوان الخادم نفسه.'); }
+      return { response, data: await readApiJson(response) };
+    }
+
+    $('loginBtn').onclick = async () => {
+      $('msg').textContent = '';
+      $('loginBtn').disabled = true;
+      try {
+        const { response: r, data: loginResult } = await apiFetch('/api/admin/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: $('loginPass').value })
+        });
+        if (!r.ok) throw new Error(loginResult.error || 'كلمة السر غير صحيحة');
+        const { response: configResponse, data: d } = await apiFetch('/api/admin/config', { cache: 'no-store' });
+        if (!configResponse.ok) throw new Error(d.error || `تعذر تحميل الإعدادات (HTTP ${configResponse.status})`);
+        $('loginCard').style.display = 'none';
+        $('panel').style.display = 'block';
+        $('mName').value = d.museumName || '';
+        $('mPass').value = d.password || '';
+        modelPath = d.characterModel || '';
+        modelMalePath = d.characterModelMale || d.characterModel || '';
+        modelFemalePath = d.characterModelFemale || '';
+        zombieModelPath = d.zombieModel || '';
+        animationPaths = d.characterAnimations || [];
+        updateModelStatusText();
+        updateZombieModelStatusText();
+        $('animationStatus').textContent = animationPaths.length ? `ملفات الحركات: ${animationPaths.join('، ')}` : 'لا توجد ملفات حركات منفصلة؛ استخدم الحركات المضمنة داخل المجسم.';
+        frames = d.frames || [];
+        renderFrames();
+      } catch (error) {
+        $('msg').textContent = error.message || 'تعذر الاتصال بالخادم؛ تحقق من عنوان الموقع وتشغيل الخادم.';
+        $('msg').style.color = '#ffb0b0';
+      } finally {
+        $('loginBtn').disabled = false;
+      }
+    };
+
+    function renderFrames() {
+      $('framesList').innerHTML = '';
+      $('framesCountBadge').textContent = `${frames.length} / 100`;
+      frames.forEach((f, i) => {
+        const div = document.createElement('div');
+        div.className = 'frame-item';
+        div.innerHTML = `<span class="frame-badge">#${i + 1}</span><img src="${f.img}" loading="lazy"><input type="text" value="" placeholder="العنوان..."><button title="حذف">🗑️</button>`;
+        div.querySelector('input').value = f.title || '';
+        div.querySelector('input').oninput = e => frames[i].title = e.target.value;
+        div.querySelector('button').onclick = () => { frames.splice(i, 1); renderFrames(); };
+        $('framesList').appendChild(div);
+      });
+      if (!frames.length) {
+        $('framesList').innerHTML = '<div style="text-align:center; color:rgba(255,255,255,.4); padding:20px 0; font-size:13px;">لا توجد صور معلقة حاليًا. اختر صورًا وأضفها.</div>';
+      }
+    }
+
+    $('clearAllBtn').onclick = () => {
+      if (!frames.length) return;
+      if (confirm('هل أنت متأكد من مسح جميع الصور؟ لن يتم الحفظ النهائي حتى تضغط "حفظ كل التغييرات".')) {
+        frames = [];
+        renderFrames();
+      }
+    };
+
+    function updateModelStatusText() {
+      let t = [];
+      if (modelMalePath) t.push(`👦 مجسم الرجل: ${modelMalePath}`);
+      else t.push('👦 مجسم الرجل: غير محدد');
+      if (modelFemalePath) t.push(`👩 مجسم الأنثى: ${modelFemalePath}`);
+      else t.push('👩 مجسم الأنثى: غير محدد');
+      $('modelStatus').innerHTML = t.join('<br>') + '<br><small style="opacity:.7">عند رفع مجسم يتم حذف مجسم اللعبة الافتراضي واستخدام مجسمك المنزّل مباشرة.</small>';
+    }
+
+    function updateZombieModelStatusText() {
+      if (zombieModelPath) {
+        $('zombieModelStatus').innerHTML = `🧟 مجسم الزومبي النشط: <b>${zombieModelPath}</b>`;
+      } else {
+        $('zombieModelStatus').innerHTML = '🧟 مجسم الزومبي: الافتراضي المدمج باللعبة.';
+      }
+    }
+
+    $('delZombieModelBtn').onclick = async () => {
+      if (!confirm('هل تريد حذف مجسم الزومبي واستعادة الافتراضي؟')) return;
+      try {
+        const { response, data } = await apiFetch('/api/admin/zombie-model/delete', { method: 'POST' });
+        if (response.ok && data.ok) {
+          zombieModelPath = '';
+          updateZombieModelStatusText();
+          $('msg').textContent = 'تم استعادة مجسم الزومبي الافتراضي ✅'; $('msg').style.color = '#a8d8b9';
+        }
+      } catch (err) {
+        $('msg').textContent = err.message; $('msg').style.color = '#ffb0b0';
+      }
+    };
+
+    $('zombieModelBtn').onclick = async () => {
+      const file = $('zombieModelFile').files[0];
+      if (!file) { $('msg').textContent = 'اختر ملف GLB/GLTF للزومبي أولاً'; $('msg').style.color = '#ffb0b0'; return; }
+      const form = new FormData();
+      form.append('model', file);
+      $('zombieModelStatus').textContent = 'جارٍ رفع مجسم الزومبي...';
+      $('msg').textContent = '';
+      try {
+        const { response, data } = await apiFetch('/api/admin/zombie-model', { method: 'POST', body: form });
+        if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر رفع مجسم الزومبي');
+        zombieModelPath = data.path;
+        updateZombieModelStatusText();
+        $('zombieModelFile').value = '';
+        $('msg').textContent = 'تم رفع مجسم الزومبي وتفعيله في اللعبة بنجاح! 🧟✅'; $('msg').style.color = '#a8d8b9';
+      } catch (error) {
+        $('zombieModelStatus').textContent = error.message || 'فشل رفع مجسم الزومبي';
+        $('msg').textContent = 'تأكد أن الملف GLB أو GLTF وحجمه أقل من 40 ميجابايت ❌'; $('msg').style.color = '#ffb0b0';
+      }
+    };
+
+    $('delModelMaleBtn').onclick = async () => {
+      if (!confirm('هل تريد حذف مجسم الرجل واستعادة الشخصية الافتراضية للرجال؟')) return;
+      try {
+        const { response, data } = await apiFetch('/api/admin/model/delete', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gender: 'male' })
+        });
+        if (response.ok && data.ok) {
+          modelMalePath = '';
+          updateModelStatusText();
+          $('msg').textContent = 'تم حذف مجسم الرجل واستعادة الافتراضي ✅'; $('msg').style.color = '#a8d8b9';
+        }
+      } catch (err) {
+        $('msg').textContent = err.message; $('msg').style.color = '#ffb0b0';
+      }
+    };
+
+    $('delModelFemaleBtn').onclick = async () => {
+      if (!confirm('هل تريد حذف مجسم الأنثى واستعادة الشخصية الافتراضية للإناث؟')) return;
+      try {
+        const { response, data } = await apiFetch('/api/admin/model/delete', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gender: 'female' })
+        });
+        if (response.ok && data.ok) {
+          modelFemalePath = '';
+          updateModelStatusText();
+          $('msg').textContent = 'تم حذف مجسم الأنثى واستعادة الافتراضي ✅'; $('msg').style.color = '#a8d8b9';
+        }
+      } catch (err) {
+        $('msg').textContent = err.message; $('msg').style.color = '#ffb0b0';
+      }
+    };
+
+    $('modelBtn').onclick = async () => {
+      const model = $('modelFile').files[0];
+      if (!model) { $('msg').textContent = 'اختر ملف GLB أولاً'; $('msg').style.color = '#ffb0b0'; return; }
+      const gender = $('modelGender').value;
+      const form = new FormData();
+      form.append('model', model);
+      form.append('gender', gender);
+      $('modelStatus').textContent = 'جارٍ رفع المجسم...';
+      $('msg').textContent = '';
+      try {
+        const { response, data } = await apiFetch('/api/admin/model', { method: 'POST', body: form });
+        if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر رفع الملف');
+        modelPath = data.path;
+        if (data.characterModelMale) modelMalePath = data.characterModelMale;
+        if (data.characterModelFemale) modelFemalePath = data.characterModelFemale;
+        updateModelStatusText();
+        $('modelFile').value = '';
+        $('msg').textContent = 'تم رفع المجسم وتفعيله ✅'; $('msg').style.color = '#a8d8b9';
+      } catch (error) {
+        $('modelStatus').textContent = error.message || 'فشل رفع المجسم';
+        $('msg').textContent = 'تأكد أن الملف GLB أو GLTF وحجمه أقل من 40 ميجابايت ❌'; $('msg').style.color = '#ffb0b0';
+      }
+    };
+
+    $('animationBtn').onclick = async () => {
+      const files = [...$('animationFiles').files];
+      if (!files.length) { $('msg').textContent = 'اختر ملفات حركات GLB أولاً'; $('msg').style.color = '#ffb0b0'; return; }
+      const form = new FormData();
+      files.forEach(file => form.append('animations', file));
+      $('animationStatus').textContent = 'جارٍ رفع ملفات الحركات...';
+      try {
+        const { response, data } = await apiFetch('/api/admin/animations', { method: 'POST', body: form });
+        if (!response.ok || !data.ok) throw new Error(data.error || 'تعذر رفع الحركات');
+        animationPaths = data.paths;
+        $('animationStatus').textContent = `ملفات الحركات: ${animationPaths.join('، ')}`;
+        $('animationFiles').value = '';
+        $('msg').textContent = 'تم رفع الحركات ✅'; $('msg').style.color = '#a8d8b9';
+      } catch (error) {
+        $('animationStatus').textContent = error.message || 'فشل رفع الحركات';
+        $('msg').textContent = 'تأكد من اختيار ملفات GLB صالحة (بحد أقصى ٨ ملفات) ❌'; $('msg').style.color = '#ffb0b0';
+      }
+    };
+
+    $('addBtn').onclick = async () => {
+      const fileInput = $('file');
+      const files = [...fileInput.files];
+      if (!files.length) { $('msg').textContent = 'اختر صورة أو صوراً أولاً'; $('msg').style.color = '#ffb0b0'; return; }
+      if (frames.length + files.length > 100) {
+        $('msg').textContent = `الحد الأقصى هو 100 صورة. لديك حاليًا ${frames.length}، ويمكنك إضافة ${100 - frames.length} فقط.`;
+        $('msg').style.color = '#ffb0b0';
+        return;
+      }
+      $('msg').textContent = files.length > 1 ? `جارٍ رفع ${files.length} صورة...` : 'جارٍ الرفع...';
+      $('msg').style.color = '#ffd9e6';
+      $('addBtn').disabled = true;
+
+      try {
+        if (files.length === 1) {
+          const fd = new FormData();
+          fd.append('image', files[0]);
+          const { response: r, data: d } = await apiFetch('/api/admin/upload', { method: 'POST', body: fd });
+          if (!r.ok || !d.ok) throw new Error(d.error || `فشل رفع الصورة (HTTP ${r.status})`);
+          frames.push({ img: d.path, title: $('newTitle').value.trim() || files[0].name.replace(/\.[^.]+$/, '') });
+        } else {
+          const fd = new FormData();
+          files.forEach(f => fd.append('images', f));
+          const { response: r, data: d } = await apiFetch('/api/admin/upload-multiple', { method: 'POST', body: fd });
+          if (!r.ok || !d.ok) throw new Error(d.error || `فشل رفع الصور (HTTP ${r.status})`);
+          d.files.forEach(f => {
+            frames.push({ img: f.path, title: f.title });
+          });
+        }
+        $('newTitle').value = '';
+        fileInput.value = '';
+        renderFrames();
+        $('msg').textContent = `تمت الإضافة ✅ (${frames.length} صورة حاليًا) — اضغط "حفظ" لتثبيتها`;
+        $('msg').style.color = '#a8d8b9';
+      } catch (error) {
+        $('msg').textContent = error.message || 'تعذر رفع الصورة';
+        $('msg').style.color = '#ffb0b0';
+      } finally {
+        $('addBtn').disabled = false;
+      }
+    };
+
+    $('saveBtn').onclick = async () => {
+      try {
+        const { response: r, data: result } = await apiFetch('/api/admin/save', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            museumName: $('mName').value,
+            password: $('mPass').value,
+            frames,
+            characterModel: modelPath,
+            characterModelMale: modelMalePath,
+            characterModelFemale: modelFemalePath,
+            zombieModel: zombieModelPath,
+            characterAnimations: animationPaths
+          })
+        });
+        if (r.ok) {
+          if (result.passwordChanged) {
+            await fetch('/api/admin/logout-after-save', { method: 'POST' });
+            $('loginPass').value = '';
+          }
+          $('msg').textContent = result.passwordChanged
+            ? 'تم الحفظ وتغيير كلمة السر. سجّل دخولك مرة أخرى لتعديل الإعدادات.'
+            : 'تم الحفظ ✅ سيظهر التغيير فورًا لكل الزوار';
+          $('msg').style.color = '#a8d8b9';
+          if (result.passwordChanged) setTimeout(() => location.reload(), 1200);
+        } else {
+          $('msg').textContent = result.error || 'انتهت صلاحية الجلسة؛ أعد تسجيل الدخول.';
+          $('msg').style.color = '#ffb0b0';
+          if (r.status === 401) setTimeout(() => location.reload(), 1200);
+        }
+      } catch (error) {
+        $('msg').textContent = error.message || 'تعذر حفظ الإعدادات؛ تحقق من اتصال الخادم.';
+        $('msg').style.color = '#ffb0b0';
+      }
+    };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#a80d1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="دهاليز الرعب">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<title>دهاليز الرعب والدم 🩸💀</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; }
+  body {
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(160deg, #060204 0%, #1c0409 45%, #2b050b 100%);
+    overflow:hidden; color:#fff;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none;
+    background: radial-gradient(circle at 20% 20%, rgba(220,20,35,.15), transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(140,10,20,.12), transparent 45%);
+  }
+  .hearts { position:fixed; top:-40px; font-size:22px; opacity:.8; animation:fall linear infinite; pointer-events:none; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity:0; } }
+  .card {
+    position:relative; z-index:2; width:min(420px, 92vw); text-align:center;
+    background: rgba(18, 4, 8, .88); border:1px solid rgba(220, 20, 35, .45);
+    border-radius:24px; padding:40px 28px; backdrop-filter: blur(16px);
+    box-shadow: 0 25px 60px rgba(0,0,0,.85), 0 0 35px rgba(180, 10, 25, .3);
+  }
+  .logo { font-size:52px; text-shadow: 0 0 20px rgba(220, 20, 35, .8); }
+  h1 { font-weight:800; font-size:26px; margin:12px 0 6px; color:#ff3b4e; text-shadow: 0 0 15px rgba(220, 20, 35, .6); }
+  .sub { font-size:14px; color:rgba(255,200,210,.7); margin-bottom:26px; }
+  input {
+    width:100%; padding:13px 16px; border-radius:14px; margin-bottom:14px;
+    border:1px solid rgba(220, 20, 35, .35); background:rgba(28, 5, 10, .7);
+    color:#fff; font-size:16px; text-align:center; outline:none; font-family:'Cairo';
+  }
+  input:focus { border-color:#ff2233; box-shadow:0 0 0 3px rgba(220,20,35,.35); }
+  input::placeholder { color:rgba(255,180,190,.45); }
+  .btn {
+    width:100%; padding:14px; border:none; border-radius:14px; cursor:pointer;
+    background: linear-gradient(135deg, #a80d1a, #52060d); color:#fff;
+    font-size:17px; font-weight:800; font-family:'Cairo';
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 8px 25px rgba(200,15,30,.55);
+  }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 12px 30px rgba(220,20,35,.75); }
+  .error { color:#ff6677; font-size:13px; min-height:18px; margin-bottom:8px; font-weight:700; }
+  .admin-link {
+    display: inline-block; margin-top: 14px; color: rgba(255,160,175,.85);
+    font-size: 13px; text-decoration: none; font-weight: 600;
+    transition: color .15s, transform .15s;
+  }
+  .admin-link:hover { color: #fff; transform: translateY(-1px); }
+  .hint { margin-top:10px; font-size:12px; color:rgba(255,180,190,.5); }
+  .colors { display:flex; gap:10px; justify-content:center; margin-bottom:16px; }
+  .colors div { width:26px; height:26px; border-radius:50%; cursor:pointer; border:2px solid transparent; }
+  .colors div.sel { border-color:#fff; transform:scale(1.15); box-shadow: 0 0 10px #ff2233; }
+  .genders { display:flex; gap:10px; justify-content:center; margin-bottom:16px; }
+  .genders button {
+    padding:9px 20px; border-radius:14px; cursor:pointer; font-family:'Cairo'; font-size:15px; font-weight:700;
+    border:2px solid rgba(220,20,35,.35); background:rgba(28,5,10,.6); color:#fff; transition:all .15s;
+  }
+  .genders button.sel { border-color:#ff2233; background:rgba(180,10,25,.4); transform:scale(1.06); box-shadow: 0 0 12px rgba(220,20,35,.5); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🩸💀</div>
+    <h1 id="mname">دهاليز الرعب والدم</h1>
+    <div class="sub">صالة الرعب والظلال... هل تجرؤ على الدخول؟ 🩸</div>
+    <input id="name" maxlength="20" placeholder="اكتب اسمك هنا...">
+    <div class="genders">
+      <button id="gMale" class="sel">👦 رجل</button>
+      <button id="gFemale">👩 أنثى</button>
+    </div>
+    <div class="colors" id="colors"></div>
+    <input id="pass" type="password" placeholder="كلمة سر الدخول" style="display:none" autocomplete="current-password">
+    <div class="error" id="err"></div>
+    <button class="btn" id="enter">ادخل دهاليز الرعب 🚪🩸</button>
+    <a href="/admin" class="admin-link">⚙️ لوحة الإدارة (صاحب المتحف)</a>
+    <div class="hint">شارك الرابط مع شريكك لتدخلا معًا في الظلام 🩸</div>
+    <button id="pwaInstallBtn" class="btn" style="display:none; margin-top:12px; background:linear-gradient(135deg, #1f2b3e, #0e1622); border:1px solid #3b82f6; font-size:14px; padding:10px;">📲 تثبيت اللعبة كتطبيق على هاتفك</button>
+  </div>
+<script>
+  const palette = ['#c41220','#8a0d18','#5e0710','#3b060d','#1c2229','#6b1126'];
+  let picked = palette[0];
+  let gender = 'male';
+  const gm = document.getElementById('gMale'), gf = document.getElementById('gFemale');
+  gm.onclick = () => { gender='male'; gm.classList.add('sel'); gf.classList.remove('sel'); };
+  gf.onclick = () => { gender='female'; gf.classList.add('sel'); gm.classList.remove('sel'); };
+  const cw = document.getElementById('colors');
+  palette.forEach((c, i) => {
+    const d = document.createElement('div');
+    d.style.background = c;
+    if (i === 0) d.classList.add('sel');
+    d.onclick = () => { picked = c; [...cw.children].forEach(x => x.classList.remove('sel')); d.classList.add('sel'); };
+    cw.appendChild(d);
+  });
+
+  async function readApiJson(response) {
+    const contentType = response.headers.get('content-type') || '';
+    const body = await response.text();
+    if (!contentType.includes('application/json')) {
+      const preview = body.trim().slice(0, 100);
+      throw new Error(`استجابة الخادم ليست JSON (HTTP ${response.status}). تأكد أنك تشغّل الخادم الصحيح. ${preview}`);
+    }
+    try { return JSON.parse(body); }
+    catch { throw new Error(`ردّ الخادم ببيانات JSON غير صالحة (HTTP ${response.status})`); }
+  }
+  async function apiFetch(url, options) {
+    let response;
+    try { response = await fetch(url, options); }
+    catch { throw new Error('تعذر الاتصال بالخادم. شغّل npm start وافتح الموقع على عنوان الخادم نفسه.'); }
+    return { response, data: await readApiJson(response) };
+  }
+
+  const museumPass = document.getElementById('pass');
+  const enterButton = document.getElementById('enter');
+  const errorBox = document.getElementById('err');
+  let requiresPassword = true;
+  apiFetch('/api/museum', { cache: 'no-store' }).then(({ response, data }) => {
+    if (response.status === 401) return { requiresPassword: true, museumName: data.museumName };
+    if (!response.ok) throw new Error(data.error || `تعذر تحميل بيانات المتحف (HTTP ${response.status})`);
+    return data;
+  }).then(d => {
+    requiresPassword = Boolean(d.requiresPassword || d.password);
+    document.getElementById('mname').textContent = d.museumName || 'متحف الذكريات';
+    museumPass.style.display = requiresPassword ? 'block' : 'none';
+    document.title = d.museumName || document.title;
+  }).catch(error => {
+    errorBox.textContent = error.message || 'تعذر الاتصال بالمتحف. حدّث الصفحة وحاول مجددًا.';
+  });
+
+  enterButton.onclick = async () => {
+    const visitorName = document.getElementById('name').value.trim();
+    if (!visitorName) { errorBox.textContent = 'اكتب اسمك الأول 💕'; return; }
+    const pass = museumPass.value;
+    errorBox.textContent = '';
+    if (requiresPassword || pass) {
+      enterButton.disabled = true;
+      try {
+        const { response, data: result } = await apiFetch('/api/museum/access', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass })
+        });
+        if (!response.ok) throw new Error(result.error || `فشل التحقق من كلمة السر (HTTP ${response.status})`);
+        sessionStorage.setItem('mm_access_token', result.token || '');
+        sessionStorage.setItem('mm_pass', pass);
+      } catch (error) {
+        errorBox.textContent = error.message || 'تعذر التحقق من كلمة السر';
+        enterButton.disabled = false;
+        return;
+      }
+      enterButton.disabled = false;
+    }
+    sessionStorage.setItem('mm_name', visitorName);
+    sessionStorage.setItem('mm_color', picked);
+    sessionStorage.setItem('mm_gender', gender);
+    // كلمة المرور تبقى ضمن الجلسة لتجديد الرمز عند انقطاع الاتصال فقط.
+    if (!requiresPassword) sessionStorage.removeItem('mm_pass');
+    location.href = 'museum.html';
+  };
+  document.getElementById('name').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('enter').click(); });
+
+  // تسجيل الـ Service Worker لتشغيل اللعبة كتطبيق PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+  let deferredPrompt = null;
+  const pwaBtn = document.getElementById('pwaInstallBtn');
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (pwaBtn) pwaBtn.style.display = 'block';
+  });
+  if (pwaBtn) {
+    pwaBtn.onclick = async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if (choice.outcome === 'accepted') pwaBtn.style.display = 'none';
+        deferredPrompt = null;
+      }
+    };
+  }
+
+  // دماء وجماجم متساقطة
+  setInterval(() => {
+    const h = document.createElement('div');
+    h.className = 'hearts'; h.textContent = ['🩸','💀','🕷️','🔥','🦇'][Math.floor(Math.random()*5)];
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.animationDuration = (4 + Math.random()*4) + 's';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 9000);
+  }, 800);
+</script>
+</body>
+</html>
